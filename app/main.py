@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("Shutting down application")
     logger.info("Application shutdown complete")
+    logger.info("Shutting down application")
 
 
 # Initialize FastAPI app
