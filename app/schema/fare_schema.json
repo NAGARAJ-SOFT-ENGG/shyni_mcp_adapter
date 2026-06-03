@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fare Estimation Request/Response Schema",
+  "description": "Schema for fare estimation requests and responses. Uses GET method with query parameters.",
+  "definitions": {
+    "request": {
+      "type": "object",
+      "title": "Fare Request",
+      "description": "Fare estimation request sent as GET request with query parameters",
+      "required": ["start_loc", "destination_loc"],
+      "properties": {
+        "start_loc": {
+          "type": "string",
+          "description": "Starting location (query parameter)",
+          "minLength": 1,
+          "examples": ["Chennai", "Bangalore"]
+        },
+        "destination_loc": {
+          "type": "string",
+          "description": "Destination location (query parameter)",
+          "minLength": 1,
+          "examples": ["Bangalore", "Hyderabad"]
+        }
+      },
+      "additionalProperties": false,
+      "errorCodes": {
+        "INVALID_PAYLOAD": 400,
+        "MISSING_START_LOC": 400,
+        "MISSING_DESTINATION_LOC": 400,
+        "API_TIMEOUT": 504,
+        "API_ERROR": 502
+      }
+    },
+    "response": {
+      "type": "object",
+      "title": "Fare Response",
+      "properties": {
+        "fare": {
+          "type": "number",
+          "description": "Estimated fare amount",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code",
+          "example": "INR"
+        },
+        "distance": {
+          "type": "number",
+          "description": "Distance in kilometers",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "string",
+          "description": "Estimated duration",
+          "example": "2 hours"
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Error flag"
+        },
+        "message": {
+          "type": "string",
+          "description": "Response message"
+        }
+      },
+      "required": ["fare", "error"],
+      "errorCodes": {
+        "RESPONSE_PARSE_ERROR": 500,
+        "INVALID_RESPONSE_FORMAT": 500
+      }
+    }
+  },
+  "errorCodes": {
+    "INVALID_PAYLOAD": 400,
+    "MISSING_START_LOC": 400,
+    "MISSING_DESTINATION_LOC": 400,
+    "API_TIMEOUT": 504,
+    "API_ERROR": 502,
+    "RESPONSE_PARSE_ERROR": 500
+  }
+}

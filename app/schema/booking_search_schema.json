@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hotel Search Request/Response Schema",
+  "description": "Request and response schemas for searching hotels via Booking.com (primary) or Google Maps (fallback)",
+  "definitions": {
+    "search_request": {
+      "type": "object",
+      "description": "Hotel search request parameters",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "City name or address (e.g., 'Amsterdam', 'Bangkok')",
+          "minLength": 2,
+          "maxLength": 256
+        },
+        "checkin": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Check-in date in ISO format (YYYY-MM-DD)"
+        },
+        "checkout": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Check-out date in ISO format (YYYY-MM-DD)"
+        },
+        "adults": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Number of adult guests"
+        },
+        "rooms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Number of rooms (optional, default: 1)"
+        },
+        "budget_max": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Maximum price per night in hotel's currency (optional, for filtering)"
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude for Google Maps fallback (required if Booking.com unavailable)"
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude for Google Maps fallback (required if Booking.com unavailable)"
+        },
+        "radius_km": {
+          "type": "number",
+          "description": "Search radius in kilometers for Google Maps fallback (optional, default: 10)"
+        }
+      },
+      "required": [
+        "location",
+        "checkin",
+        "checkout",
+        "adults"
+      ]
+    },
+    "hotel": {
+      "type": "object",
+      "description": "Normalized hotel result (same format whether from Booking.com or Google Maps)",
+      "properties": {
+        "hotel_id": {
+          "type": "string",
+          "description": "Unique hotel identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Hotel name"
+        },
+        "price_per_night": {
+          "type": "number",
+          "description": "Average price per night for the search dates"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code (e.g., EUR, USD, INR)"
+        },
+        "review_score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 5,
+          "description": "Guest review score on 0-5 scale"
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Hotel address"
+        },
+        "thumbnail": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Hotel image URL (optional)"
+        }
+      },
+      "required": [
+        "hotel_id",
+        "name",
+        "price_per_night",
+        "currency"
+      ]
+    },
+    "search_response": {
+      "type": "object",
+      "description": "Normalized hotel search results",
+      "properties": {
+        "hotels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hotel"
+          },
+          "description": "List of available hotels"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of hotels returned"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "booking.com",
+            "google_maps"
+          ],
+          "description": "Data source (Booking.com primary, Google Maps fallback)"
+        },
+        "available": {
+          "type": "boolean",
+          "description": "Whether search was successful"
+        }
+      },
+      "required": [
+        "hotels",
+        "total",
+        "source",
+        "available"
+      ]
+    }
+  }
+}

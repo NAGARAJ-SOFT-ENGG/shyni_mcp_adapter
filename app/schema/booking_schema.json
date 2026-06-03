@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Booking Request/Response Schema",
+  "description": "Schema for cab booking requests and responses",
+  "definitions": {
+    "request": {
+      "type": "object",
+      "title": "Booking Request",
+      "required": [
+        "ridereq_for",
+        "ride_pickupgps",
+        "ride_startloc",
+        "ride_destination",
+        "ride_datetime",
+        "ride_vehicle_type",
+        "ride_passengerscount",
+        "ride_contact",
+        "ride_customermobile",
+        "confirmed"
+      ],
+      "properties": {
+        "ridereq_for": {
+          "type": "string",
+          "description": "Rider request identifier",
+          "minLength": 1
+        },
+        "ride_occname": {
+          "type": ["string", "null"],
+          "description": "Occurrence name (optional)"
+        },
+        "ride_pickupgps": {
+          "type": "string",
+          "description": "Pickup GPS coordinates",
+          "pattern": "^-?[0-9]{1,3}\\.[0-9]+ -?[0-9]{1,3}\\.[0-9]+$",
+          "examples": ["13.0827 80.2707"]
+        },
+        "ride_startloc": {
+          "type": "string",
+          "description": "Start location",
+          "minLength": 1,
+          "examples": ["Chennai"]
+        },
+        "ride_destination": {
+          "type": "string",
+          "description": "Destination location",
+          "minLength": 1,
+          "examples": ["Bangalore"]
+        },
+        "ride_datetime": {
+          "type": "string",
+          "description": "Ride date and time (ISO 8601 or YYYY-MM-DD HH:MM:SS format)",
+          "examples": ["2026-05-28T14:30:00", "2026-05-28 14:30:00"]
+        },
+        "ride_vehicle_type": {
+          "type": "string",
+          "description": "Type of vehicle",
+          "minLength": 1,
+          "examples": ["sedan"]
+        },
+        "ride_passengerscount": {
+          "type": "integer",
+          "description": "Number of passengers",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "ride_contact": {
+          "type": "string",
+          "description": "Contact number",
+          "pattern": "^\\+?[0-9]{10,15}$",
+          "examples": ["+919876543210", "9876543210"]
+        },
+        "ride_operatormobile": {
+          "type": "string",
+          "description": "Operator mobile number (optional, defaults to empty string if not provided)",
+          "pattern": "^(\\+?[0-9]{10,15})?$",
+          "examples": ["", "+919876543210", "1111111111"]
+        },
+        "ride_customermobile": {
+          "type": "string",
+          "description": "Customer mobile number",
+          "pattern": "^\\+?[0-9]{10,15}$",
+          "examples": ["+919791842873", "9876543210"]
+        },
+        "ride_generatedtime": {
+          "type": ["string", "null"],
+          "description": "Generated timestamp (auto-generated if not provided)"
+        },
+        "confirmed": {
+          "type": "boolean",
+          "description": "Confirmation flag (MUST be true)",
+          "const": true
+        }
+      },
+      "additionalProperties": false,
+      "errorCodes": {
+        "INVALID_PAYLOAD": 400,
+        "MISSING_REQUIRED_FIELD": 400,
+        "INVALID_GPS_FORMAT": 400,
+        "INVALID_PHONE_FORMAT": 400,
+        "INVALID_VEHICLE_TYPE": 400,
+        "INVALID_PASSENGERS_COUNT": 400,
+        "CONFIRMATION_REQUIRED": 403,
+        "API_TIMEOUT": 504,
+        "API_ERROR": 502
+      }
+    },
+    "response": {
+      "type": "object",
+      "title": "Booking Response",
+      "properties": {
+        "booking_id": {
+          "type": "string",
+          "description": "Unique booking identifier"
+        },
+        "status": {
+          "type": "string",
+          "description": "Booking status",
+          "enum": ["confirmed", "pending", "completed", "cancelled"]
+        },
+        "ride_id": {
+          "type": "string",
+          "description": "Ride identifier"
+        },
+        "fare": {
+          "type": "number",
+          "description": "Booking fare",
+          "minimum": 0
+        },
+        "driver_name": {
+          "type": "string",
+          "description": "Assigned driver name"
+        },
+        "driver_mobile": {
+          "type": "string",
+          "description": "Driver mobile number"
+        },
+        "vehicle_number": {
+          "type": "string",
+          "description": "Vehicle registration number"
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Error flag"
+        },
+        "message": {
+          "type": "string",
+          "description": "Response message"
+        }
+      },
+      "required": ["booking_id", "status", "error"],
+      "errorCodes": {
+        "RESPONSE_PARSE_ERROR": 500,
+        "INVALID_RESPONSE_FORMAT": 500
+      }
+    }
+  },
+  "errorCodes": {
+    "INVALID_PAYLOAD": 400,
+    "MISSING_REQUIRED_FIELD": 400,
+    "INVALID_GPS_FORMAT": 400,
+    "INVALID_PHONE_FORMAT": 400,
+    "INVALID_VEHICLE_TYPE": 400,
+    "INVALID_PASSENGERS_COUNT": 400,
+    "CONFIRMATION_REQUIRED": 403,
+    "API_TIMEOUT": 504,
+    "API_ERROR": 502,
+    "RESPONSE_PARSE_ERROR": 500
+  }
+}

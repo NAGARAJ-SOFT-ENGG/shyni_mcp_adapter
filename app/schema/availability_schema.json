@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Availability Request/Response Schema",
+  "description": "Schema for cab availability requests and responses",
+  "definitions": {
+    "request": {
+      "type": "object",
+      "title": "Availability Request",
+      "properties": {
+        "operator_mobile": {
+          "type": "string",
+          "description": "Operator mobile number (optional, defaults to empty string if not provided)",
+          "pattern": "^[0-9]{0,15}$",
+          "examples": ["", "9876543210", "8765432109"]
+        }
+      },
+      "additionalProperties": false,
+      "errorCodes": {
+        "INVALID_PAYLOAD": 400,
+        "MISSING_OPERATOR_MOBILE": 400,
+        "API_TIMEOUT": 504,
+        "API_ERROR": 502
+      }
+    },
+    "response": {
+      "type": "object",
+      "title": "Availability Response",
+      "properties": {
+        "current": {
+          "type": "array",
+          "description": "List of currently available cabs",
+          "items": {
+            "type": "object",
+            "properties": {
+              "cab_id": {
+                "type": "string",
+                "description": "Unique cab identifier"
+              },
+              "cab_number": {
+                "type": "string",
+                "description": "Vehicle registration number"
+              },
+              "driver_name": {
+                "type": "string",
+                "description": "Name of the driver"
+              },
+              "location": {
+                "type": "string",
+                "description": "Current location of cab"
+              },
+              "latitude": {
+                "type": "number",
+                "description": "Current latitude"
+              },
+              "longitude": {
+                "type": "number",
+                "description": "Current longitude"
+              }
+            }
+          }
+        },
+        "pending": {
+          "type": "array",
+          "description": "List of pending bookings",
+          "items": {
+            "type": "object"
+          }
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Error flag"
+        },
+        "message": {
+          "type": "string",
+          "description": "Response message"
+        }
+      },
+      "required": ["current", "error"],
+      "errorCodes": {
+        "RESPONSE_PARSE_ERROR": 500,
+        "INVALID_RESPONSE_FORMAT": 500
+      }
+    }
+  },
+  "errorCodes": {
+    "INVALID_PAYLOAD": 400,
+    "MISSING_OPERATOR_MOBILE": 400,
+    "API_TIMEOUT": 504,
+    "API_ERROR": 502,
+    "RESPONSE_PARSE_ERROR": 500
+  }
+}

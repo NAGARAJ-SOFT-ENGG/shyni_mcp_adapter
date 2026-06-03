@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tool Call Request Schema",
+  "description": "Generic schema for MCP tool call requests",
+  "type": "object",
+  "required": ["tool"],
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "Name of the tool to execute",
+      "enum": ["get_cab_availability", "get_estimated_fare", "book_outstation_drop"]
+    }
+  },
+  "additionalProperties": true,
+  "errorCodes": {
+    "INVALID_REQUEST": 400,
+    "TOOL_NOT_FOUND": 404,
+    "EXECUTION_ERROR": 500,
+    "INVALID_PAYLOAD": 400,
+    "MISSING_TOOL": 400
+  },
+  "examples": [
+    {
+      "tool": "get_cab_availability",
+      "operator_mobile": "9876543210"
+    },
+    {
+      "tool": "get_estimated_fare",
+      "start_loc": "Chennai",
+      "destination_loc": "Bangalore"
+    },
+    {
+      "tool": "book_outstation_drop",
+      "ridereq_for": "REQ001",
+      "ride_pickupgps": "13.0827,80.2707",
+      "ride_startloc": "Chennai",
+      "ride_destination": "Bangalore",
+      "ride_datetime": "2026-05-28T14:30:00",
+      "ride_vehicle_type": "BudgetCabs",
+      "ride_passengerscount": 1,
+      "ride_contact": "9876543210",
+      "ride_operatormobile": "9876543210",
+      "ride_customermobile": "9876543210",
+      "confirmed": true
+    }
+  ]
+}

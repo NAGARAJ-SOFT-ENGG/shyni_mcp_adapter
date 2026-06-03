@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hotel Search Request/Response Schema",
+  "description": "Schema for hotel search requests and responses using Google Maps API",
+  "definitions": {
+    "request": {
+      "type": "object",
+      "title": "Hotel Search Request",
+      "required": [
+        "latitude",
+        "longitude"
+      ],
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "description": "Latitude of the search location",
+          "minimum": -90,
+          "maximum": 90,
+          "examples": [13.0827]
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude of the search location",
+          "minimum": -180,
+          "maximum": 180,
+          "examples": [80.2707]
+        },
+        "radius_km": {
+          "type": "number",
+          "description": "Search radius in kilometers (default: 10)",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 10,
+          "examples": [10]
+        }
+      },
+      "additionalProperties": false,
+      "errorCodes": {
+        "INVALID_PAYLOAD": 400,
+        "MISSING_LATITUDE": 400,
+        "MISSING_LONGITUDE": 400,
+        "INVALID_COORDINATES": 400,
+        "API_KEY_MISSING": 401,
+        "API_TIMEOUT": 504,
+        "API_ERROR": 502
+      }
+    },
+    "response": {
+      "type": "object",
+      "title": "Hotel Search Response",
+      "properties": {
+        "hotels": {
+          "type": "array",
+          "description": "List of nearby hotels",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Hotel name"
+              },
+              "distance_km": {
+                "type": "number",
+                "description": "Distance from search location in kilometers"
+              },
+              "rating": {
+                "type": ["number", "null"],
+                "description": "Hotel rating (0-5 scale)"
+              },
+              "review_count": {
+                "type": ["integer", "null"],
+                "description": "Number of reviews"
+              },
+              "is_open": {
+                "type": "boolean",
+                "description": "Whether the hotel is currently open (true if open_now is true in API response)"
+              },
+              "daily_rate_range": {
+                "type": ["object", "null"],
+                "description": "Estimated daily rate range in local currency",
+                "properties": {
+                  "currency": {
+                    "type": "string",
+                    "description": "Currency code (e.g., INR, USD)"
+                  },
+                  "min": {
+                    "type": "number",
+                    "description": "Minimum estimated daily rate"
+                  },
+                  "max": {
+                    "type": "number",
+                    "description": "Maximum estimated daily rate"
+                  },
+                  "display": {
+                    "type": "string",
+                    "description": "Formatted display string (e.g., '₹800 to ₹900 per day')"
+                  }
+                }
+              },
+              "latitude": {
+                "type": "number",
+                "description": "Hotel latitude"
+              },
+              "longitude": {
+                "type": "number",
+                "description": "Hotel longitude"
+              },
+              "address": {
+                "type": ["string", "null"],
+                "description": "Hotel address"
+              },
+              "phone": {
+                "type": ["string", "null"],
+                "description": "Hotel phone number"
+              },
+              "website": {
+                "type": ["string", "null"],
+                "description": "Hotel website URL"
+              }
+            }
+          }
+        },
+        "search_center": {
+          "type": "object",
+          "description": "Search center coordinates",
+          "properties": {
+            "latitude": {
+              "type": "number"
+            },
+            "longitude": {
+              "type": "number"
+            },
+            "radius_km": {
+              "type": "number"
+            }
+          }
+        },
+        "total_results": {
+          "type": "integer",
+          "description": "Total number of hotels found"
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Error flag"
+        },
+        "message": {
+          "type": "string",
+          "description": "Response message"
+        }
+      },
+      "required": ["hotels", "error"],
+      "errorCodes": {
+        "RESPONSE_PARSE_ERROR": 500,
+        "INVALID_RESPONSE_FORMAT": 500
+      }
+    }
+  },
+  "errorCodes": {
+    "INVALID_PAYLOAD": 400,
+    "MISSING_LATITUDE": 400,
+    "MISSING_LONGITUDE": 400,
+    "INVALID_COORDINATES": 400,
+    "API_KEY_MISSING": 401,
+    "API_TIMEOUT": 504,
+    "API_ERROR": 502,
+    "RESPONSE_PARSE_ERROR": 500
+  }
+}
